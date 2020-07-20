@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   Future<Map> _getGifs() async {
     http.Response response;
     String url;
-    if (_search == null) {
+    if (_search == null || _search.isEmpty) {
       url =
           'https://api.giphy.com/v1/gifs/trending?api_key=1CZM7oBlmcKG3qD6S6CXMG6aAxJHMDRS&limit=25&rating=g';
     } else {
@@ -116,7 +116,9 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
       itemCount: _getCount(snapshot.data['data']),
       itemBuilder: (context, index) {
-        if (_search == null || index < snapshot.data['data'].length) {
+        if (_search == null ||
+            _search.isEmpty ||
+            index < snapshot.data['data'].length) {
           return GestureDetector(
             child: FadeInImage.memoryNetwork(
               placeholder: kTransparentImage,
