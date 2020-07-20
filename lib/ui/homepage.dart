@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _searchController = TextEditingController();
+
   String _search;
 
   int _offset = 0;
@@ -25,15 +27,9 @@ class _HomePageState extends State<HomePage> {
           'https://api.giphy.com/v1/gifs/search?api_key=1CZM7oBlmcKG3qD6S6CXMG6aAxJHMDRS&q=$_search&limit=25&offset=$_offset&rating=g&lang=en';
     }
     response = await http.get(url);
-    // _search = null;
+
     return json.decode(response.body);
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getGifs().then((map) => {print(map)});
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +46,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextField(
+              controller: _searchController,
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Search Here',
@@ -64,6 +61,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   _search = text;
                   _offset = 0;
+                  _searchController.text = '';
                 });
               },
             ),
@@ -84,6 +82,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   case ConnectionState.waiting:
+                    return Container();
                   default:
                     if (snapshot.hasError) {
                       return Container();
