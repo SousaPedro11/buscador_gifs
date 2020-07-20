@@ -6,6 +6,7 @@ void main(List<String> args) {
     MaterialApp(
       title: 'Buscador de GIFs',
       home: HomePage(),
+      theme: ThemeData(hintColor: Colors.white),
     ),
   );
 }

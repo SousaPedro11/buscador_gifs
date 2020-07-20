@@ -37,6 +37,77 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Image.network(
+            'https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif'),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.black,
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: TextField(
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Search Here',
+                labelStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ),
+                border: OutlineInputBorder(),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _getGifs(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Container(
+                      width: 200.0,
+                      height: 200.0,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 5.0,
+                      ),
+                    );
+                  case ConnectionState.waiting:
+                  default:
+                    if (snapshot.hasError) {
+                      return Container();
+                    } else {
+                      return _createGiftTable(context, snapshot);
+                    }
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+Widget _createGiftTable(BuildContext context, AsyncSnapshot snapshot) {
+  return GridView.builder(
+    padding: EdgeInsets.all(10.0),
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+    itemCount: snapshot.data['data'].length,
+    itemBuilder: (context, index) {
+      return GestureDetector(
+        child: Image.network(
+          snapshot.data['data'][index]['images']['fixed_height']['url'],
+          height: 300.0,
+          fit: BoxFit.cover,
+        ),
+      );
+    },
+  );
 }
